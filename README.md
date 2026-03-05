@@ -35,35 +35,32 @@ A full-stack web application for cryptocurrency price forecasting using machine 
 ## 🏗️ Project Structure
 
 ```
-infosys/
-├── WebApplication/
-│   ├── client/                 # React + Vite frontend
-│   │   ├── src/
-│   │   │   ├── components/     # Reusable UI components
-│   │   │   ├── pages/          # Page components
-│   │   │   ├── hooks/          # Custom React hooks
-│   │   │   ├── services/       # API service layer
-│   │   │   └── constants/      # Configuration constants
-│   │   └── package.json
-│   │
-│   ├── server/                 # FastAPI backend
-│   │   ├── app/
-│   │   │   ├── routers/        # API route handlers
-│   │   │   ├── services/       # Business logic
-│   │   │   ├── models.py       # Pydantic models
-│   │   │   └── config.py       # Configuration
-│   │   └── requirements.txt
-│   │
-│   ├── Models_Hourly/          # LSTM models for hourly forecasting
-│   ├── Models_Daily_ML/        # Gradient Boosting models for daily forecasting
-│   ├── Scalers_Hourly/         # Feature scalers for hourly models
-│   ├── Scalers_Daily_ML/       # Feature scalers for daily models
-│   └── Metadata/               # Training metadata JSON files
-│
-└── Milestone1/                 # Historical datasets
-    ├── Hourly_Dataset/         # Hourly OHLCV data
-    └── Daily_Dataset/          # Daily OHLCV data
-```
+
+WebApplication/
+├── client/                 # React + Vite frontend
+│   ├── src/
+│   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── services/       # API service layer
+│   │   └── constants/      # Configuration constants
+│   └── package.json
+│  
+├── server/                 # FastAPI backend
+│   ├── app/
+│   │   ├── routers/        # API route handlers
+│   │   ├── services/       # Business logic
+│   │   ├── models.py       # Pydantic models
+│   │   └── config.py       # Configuration
+│   └── requirements.txt
+│   
+├── Models_Hourly/          # LSTM models for hourly forecasting
+├── Models_Daily_ML/        # Gradient Boosting models for daily forecasting
+├── Scalers_Hourly/         # Feature scalers for hourly models
+├── Scalers_Daily_ML/       # Feature scalers for daily models
+└── Metadata/               # Training metadata JSON files
+
+
 
 ## 🚀 Getting Started
 
@@ -165,6 +162,26 @@ infosys/
 | POST | `/profile` | Update user profile |
 | POST | `/profile/photo` | Upload profile photo |
 
+### News Section 
+
+The application offers a dedicated news page where users can read the latest cryptocurrency headlines, filter by coin, and dive deeper with AI‑powered analysis.  Highlights include:
+
+- **Aggregated Headlines** – pulls from free sources (CryptoCompare) and keeps the feed up‑to‑date.
+- **Sentiment Scoring** – every article is run through a lightweight rule‑based analyzer so users can quickly see if the story is bullish, bearish or neutral.
+- **Trending/Hot News** – the frontend can show the top stories based on recency and sentiment strength.
+- **AI News Analyst** – click a headline to open a modal that uses Google Gemini to generate a summary, sentiment breakdown and price‑impact analysis.  Follow‑up questions are handled via a chat interface.
+
+#### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/news` | Fetch recent news; optional query parameters `coin` (e.g. BTC, ETH) and `date_range` (`today` or `30d`). Returns sentiment for each item. |
+| GET | `/news/trending` | Get top 10 trending/hot crypto stories ranked by recency & sentiment. |
+| POST | `/news/summarize` | Send article title/body to Gemini and receive a structured AI summary with sentiment & price‑impact analysis. |
+| POST | `/news/chat` | Multi‑turn chat endpoint for follow‑up questions about a specific article. |
+
+
+
 ## 🤖 Model Architecture
 
 ### Hourly LSTM Model (24-hour forecast)
@@ -208,9 +225,6 @@ The application features a modern, responsive design with:
 - Technical sentiment derived from RSI, MACD, EMA, and volatility analysis on predicted series
 - Models are cached for instant predictions; use "Force Retrain" to regenerate
 
-## 👥 Contributors
-
-- Infosys Springboard Batch 5, November 2025
 
 ## 📄 License
 
