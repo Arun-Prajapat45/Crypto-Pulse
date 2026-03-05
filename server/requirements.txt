@@ -13,3 +13,4 @@ google-auth
 google-auth-httplib2
 pydantic-settings
 httpx
+google-generativeai

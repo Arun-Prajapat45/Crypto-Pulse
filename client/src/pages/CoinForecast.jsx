@@ -423,7 +423,7 @@ export default function CoinForecast() {
         </div>
       </div>
 
-      {/* Section selector: Historical / Training / Forecast */}
+      {/* Section selector: Historical / Forecast */}
       <div className="mt-6 flex items-center gap-3">
         <button
           onClick={() => navigate(`/coin/${slug}`)}
@@ -431,13 +431,6 @@ export default function CoinForecast() {
           className={`rounded-full px-4 py-2 text-sm font-medium ${activeSection === "historical" ? "bg-accent text-slate-900" : "bg-white/5 text-slate-300"} ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           Historical Analysis
-        </button>
-        <button
-          onClick={() => navigate(`/coin/${slug}/training`)}
-          disabled={loading}
-          className={`rounded-full px-4 py-2 text-sm font-medium ${activeSection === "training" ? "bg-accent text-slate-900" : "bg-white/5 text-slate-300"} ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-        >
-          Training &amp; Testing
         </button>
         <button
           onClick={() => navigate(`/coin/${slug}/forecast`)}

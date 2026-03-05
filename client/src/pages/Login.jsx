@@ -151,8 +151,8 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={`w-full pl-11 pr-10 py-3 bg-white/[0.03] border rounded-xl text-white placeholder-slate-500 outline-none focus:bg-white/[0.05] transition-all duration-200 ${emailTouched && !isEmailValid
-                      ? 'border-rose-500/60 focus:border-rose-500/60'
-                      : 'border-white/10 focus:border-emerald-500/40'
+                    ? 'border-rose-500/60 focus:border-rose-500/60'
+                    : 'border-white/10 focus:border-emerald-500/40'
                     }`}
                   placeholder="you@example.com"
                   required
@@ -218,6 +218,15 @@ export default function Login() {
                     </svg>
                   )}
                 </button>
+              </div>
+              {/* Forgot Password Link */}
+              <div className="text-right">
+                <Link
+                  to="/forgot-password"
+                  className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
+                >
+                  Forgot password?
+                </Link>
               </div>
             </div>
 

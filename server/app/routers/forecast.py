@@ -9,7 +9,12 @@ from ..services.forecasting import generate_forecast, generate_hourly_forecast
 from ..services.sentiment import build_sentiment_views
 from ..db import get_db
 
-AVAILABLE_COINS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "DOGEUSDT", "ADAUSDT", "BCHUSDT"]
+AVAILABLE_COINS = [
+    "BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT", "DOGEUSDT", "BCHUSDT", 
+    "BNBUSDT", "ADAUSDT", "LTCUSDT", "DOTUSDT", "LINKUSDT", "AVAXUSDT",
+    "MATICUSDT", "UNIUSDT", "XLMUSDT", "TRXUSDT", "ATOMUSDT", "XMRUSDT",
+    "SHIBUSDT", "ARBUSDT", "OPUSDT", "APTUSDT", "SUIUSDT"
+]
 VALID_HORIZONS = [7, 15, 30]  # Removed 1 and 2 - use /hourly endpoint instead
 
 router = APIRouter(prefix="/forecast", tags=["forecast"])

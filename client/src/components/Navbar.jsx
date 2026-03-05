@@ -82,8 +82,8 @@ export default function Navbar() {
 
   return (
     <nav className={`sticky top-0 z-50 backdrop-blur-xl border-b shadow-lg ${isDark
-        ? "bg-[#070819]/80 border-white/5 shadow-black/10"
-        : "bg-white/90 border-slate-200 shadow-slate-200/50"
+      ? "bg-[#070819]/80 border-white/5 shadow-black/10"
+      : "bg-white/90 border-slate-200 shadow-slate-200/50"
       }`}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         {/* Logo */}
@@ -106,7 +106,6 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
           <NavLink to="/news">Top News</NavLink>
           <NavLink to="/about">About</NavLink>
           {isAuthenticated && (
@@ -126,8 +125,8 @@ export default function Navbar() {
               <Link
                 to="/profile"
                 className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${isDark
-                    ? "bg-white/5 text-slate-200 hover:bg-white/10"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  ? "bg-white/5 text-slate-200 hover:bg-white/10"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                   }`}
               >
                 <div className="h-6 w-6 rounded-full bg-gradient-to-br from-accent to-emerald-600 flex items-center justify-center text-xs font-bold text-slate-900">
@@ -138,8 +137,8 @@ export default function Navbar() {
               <button
                 onClick={handleLogout}
                 className={`rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 ${isDark
-                    ? "border-white/10 text-slate-200 hover:border-rose-500/50 hover:text-rose-400"
-                    : "border-slate-200 text-slate-600 hover:border-rose-400 hover:text-rose-500"
+                  ? "border-white/10 text-slate-200 hover:border-rose-500/50 hover:text-rose-400"
+                  : "border-slate-200 text-slate-600 hover:border-rose-400 hover:text-rose-500"
                   }`}
               >
                 Logout
@@ -186,28 +185,18 @@ export default function Navbar() {
             to="/"
             onClick={() => setMobileMenuOpen(false)}
             className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/')
-                ? 'bg-accent/10 text-accent'
-                : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-accent/10 text-accent'
+              : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
               }`}
           >
             Home
           </Link>
           <Link
-            to="/dashboard"
-            onClick={() => setMobileMenuOpen(false)}
-            className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/dashboard')
-                ? 'bg-accent/10 text-accent'
-                : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-          >
-            Dashboard
-          </Link>
-          <Link
             to="/news"
             onClick={() => setMobileMenuOpen(false)}
             className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/news')
-                ? 'bg-accent/10 text-accent'
-                : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-accent/10 text-accent'
+              : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
               }`}
           >
             Top News
@@ -216,8 +205,8 @@ export default function Navbar() {
             to="/about"
             onClick={() => setMobileMenuOpen(false)}
             className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/about')
-                ? 'bg-accent/10 text-accent'
-                : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-accent/10 text-accent'
+              : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
               }`}
           >
             About
@@ -228,8 +217,8 @@ export default function Navbar() {
                 to="/history"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/history')
-                    ? 'bg-accent/10 text-accent'
-                    : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-accent/10 text-accent'
+                  : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
                   }`}
               >
                 History
@@ -238,8 +227,8 @@ export default function Navbar() {
                 to="/profile"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isActive('/profile')
-                    ? 'bg-accent/10 text-accent'
-                    : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-accent/10 text-accent'
+                  : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-100'
                   }`}
               >
                 Profile

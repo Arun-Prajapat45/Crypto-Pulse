@@ -1,14 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import CoinDetail from "./pages/CoinDetail.jsx";
-import CoinTraining from "./pages/CoinTraining.jsx";
 import CoinForecast from "./pages/CoinForecast.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import Profile from "./pages/Profile.jsx";
 import History from "./pages/History.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
 import About from "./pages/About.jsx";
 import TopNews from "./pages/TopNews.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -30,19 +30,13 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/coin/:slug"
           element={
             <ProtectedRoute>
               <CoinDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/coin/:slug/training"
-          element={
-            <ProtectedRoute>
-              <CoinTraining />
             </ProtectedRoute>
           }
         />
@@ -67,14 +61,6 @@ function App() {
           element={
             <ProtectedRoute>
               <History />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
             </ProtectedRoute>
           }
         />

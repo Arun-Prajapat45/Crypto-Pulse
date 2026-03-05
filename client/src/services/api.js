@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+// In dev: use empty baseURL so requests go through Vite proxy (avoids CORS + 404)
+// In prod: set VITE_API_BASE to your backend URL (e.g. https://api.example.com)
+const baseURL = import.meta.env.VITE_API_BASE ?? "";
 
 export const api = axios.create({
   baseURL,

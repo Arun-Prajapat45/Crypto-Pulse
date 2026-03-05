@@ -66,6 +66,18 @@ def create_app() -> FastAPI:
 
         return {"status": "ok", "db": db_ok, "db_error": db_error, "tf": tf_ok}
 
+    @app.on_event("startup")
+    async def _log_routes():
+        try:
+            print("Registered routes:")
+            for r in app.router.routes:
+                methods = getattr(r, "methods", None)
+                path = getattr(r, "path", getattr(r, "match", None))
+                if methods and path:
+                    print(f"  {','.join(sorted(methods))} -> {path}")
+        except Exception:
+            pass
+
     return app
 
 

@@ -64,8 +64,8 @@ function TutorialStep({ number, title, description, isActive, onClick }) {
         <div
             onClick={onClick}
             className={`cursor-pointer p-5 rounded-2xl border transition-all duration-300 ${isActive
-                    ? 'border-accent bg-accent/10 shadow-lg shadow-accent/10'
-                    : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
+                ? 'border-accent bg-accent/10 shadow-lg shadow-accent/10'
+                : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
                 }`}
         >
             <div className="flex items-start gap-4">
@@ -249,7 +249,7 @@ export default function About() {
                 <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
                     <div className="text-center">
                         <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                            <AnimatedCounter value={8} suffix="+" />
+                            <AnimatedCounter value={20} suffix="+" />
                         </div>
                         <div className="text-slate-400 text-sm">Cryptocurrencies</div>
                     </div>

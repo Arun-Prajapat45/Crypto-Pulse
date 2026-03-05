@@ -266,11 +266,9 @@ export default function CoinDetail() {
     return [minPrice - padding, maxPrice + padding];
   }, [chartData]);
 
-  const activeSection = location.pathname.endsWith("/training")
-    ? "training"
-    : location.pathname.endsWith("/forecast")
-      ? "forecast"
-      : "historical";
+  const activeSection = location.pathname.endsWith("/forecast")
+    ? "forecast"
+    : "historical";
 
   const refAdjusted = referenceLine ? referenceLine * fxRate : null;
 
@@ -313,12 +311,6 @@ export default function CoinDetail() {
           className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${activeSection === "historical" ? "bg-accent text-slate-900" : "bg-white/5 text-slate-300 hover:bg-white/10"}`}
         >
           Historical Analysis
-        </button>
-        <button
-          onClick={() => navigate(`/coin/${slug}/training`)}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${activeSection === "training" ? "bg-accent text-slate-900" : "bg-white/5 text-slate-300 hover:bg-white/10"}`}
-        >
-          Training &amp; Testing
         </button>
         <button
           onClick={() => navigate(`/coin/${slug}/forecast`)}

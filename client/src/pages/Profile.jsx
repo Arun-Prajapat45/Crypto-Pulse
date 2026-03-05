@@ -17,6 +17,43 @@ const getProfilePhotoUrl = (photoPath) => {
   return `${API_BASE}${photoPath}`;
 };
 
+// Password strength indicator component
+const PasswordStrength = ({ password }) => {
+  const getStrength = () => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+  };
+
+  const strength = getStrength();
+  const labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Excellent'];
+
+  if (!password) return null;
+
+  return (
+    <div className="mt-2 space-y-1">
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div
+            key={i}
+            className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= strength
+              ? strength <= 2 ? 'bg-rose-400' : strength <= 3 ? 'bg-amber-400' : 'bg-emerald-400'
+              : 'bg-white/10'
+              }`}
+          />
+        ))}
+      </div>
+      <p className={`text-xs ${strength <= 2 ? 'text-rose-400' : strength <= 3 ? 'text-amber-400' : 'text-emerald-400'}`}>
+        {labels[strength]}
+      </p>
+    </div>
+  );
+};
+
 export default function Profile() {
   const { user, setUser } = useAuth();
   const { isDark } = useTheme();
@@ -115,8 +152,8 @@ export default function Profile() {
       setPasswordError("All fields are required");
       return;
     }
-    if (newPassword.length < 6) {
-      setPasswordError("New password must be at least 6 characters");
+    if (newPassword.length < 8) {
+      setPasswordError("New password must be at least 8 characters");
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -382,7 +419,7 @@ export default function Profile() {
           </a>
 
           <a
-            href="/dashboard"
+            href="/news"
             className={`flex items-center gap-3 p-4 rounded-2xl transition-all duration-200 ${isDark
               ? "bg-white/5 hover:bg-white/10 text-white"
               : "bg-slate-50 hover:bg-slate-100 text-slate-900"
@@ -394,9 +431,9 @@ export default function Profile() {
               </svg>
             </div>
             <div>
-              <div className="text-sm font-medium">Dashboard</div>
+              <div className="text-sm font-medium">Top News</div>
               <div className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                View market overview
+                View market news
               </div>
             </div>
             <svg className={`w-4 h-4 ml-auto ${isDark ? "text-slate-500" : "text-slate-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -477,8 +514,10 @@ export default function Profile() {
                     ? "bg-white/5 border-white/10 text-white placeholder-slate-500 focus:border-purple-500"
                     : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-purple-500"
                     } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
-                  placeholder="Enter new password (min. 6 characters)"
+                  placeholder="Enter new password (min. 8 characters)"
+                  minLength={8}
                 />
+                <PasswordStrength password={newPassword} />
               </div>
 
               {/* Confirm Password */}

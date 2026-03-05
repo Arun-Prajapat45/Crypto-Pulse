@@ -1,10 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from bson import ObjectId
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 
-from ..models import UserCreate, UserLogin, UserPublic, TokenResponse, GoogleAuthPayload, ChangePasswordRequest
+from ..models import UserCreate, UserLogin, UserPublic, TokenResponse, GoogleAuthPayload, ChangePasswordRequest, ForgotPasswordRequest
 from ..auth import hash_password, verify_password, create_access_token
 from ..db import get_db
 from ..deps import get_current_user
@@ -171,10 +171,10 @@ async def change_password(payload: ChangePasswordRequest, current=Depends(get_cu
         )
     
     # Validate new password
-    if len(payload.new_password) < 6:
+    if len(payload.new_password) < 8:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="New password must be at least 6 characters"
+            detail="New password must be at least 8 characters"
         )
     
     # Update password
@@ -185,6 +185,98 @@ async def change_password(payload: ChangePasswordRequest, current=Depends(get_cu
     )
     
     return {"detail": "Password changed successfully"}
+
+
+@router.post("/forgot-password")
+async def forgot_password(payload: ForgotPasswordRequest, db=Depends(get_db), settings=Depends(get_settings)):
+    """Send password reset email with secure token
+    
+    This endpoint:
+    1. Checks if the email exists in the database
+    2. Generates a secure reset token
+    3. Stores the token with 1-hour expiration
+    4. Sends an email with the reset link
+    """
+    from ..services.email_service import generate_reset_token, send_password_reset_email
+    
+    # Check if user exists
+    user = await db.users.find_one({"email": payload.email})
+    
+    # Always return success to prevent email enumeration attacks
+    # But only send email if user actually exists
+    if user:
+        # Generate secure reset token
+        reset_token = generate_reset_token()
+        
+        # Store token in database with 1-hour expiration
+        await db.password_resets.insert_one({
+            "email": payload.email,
+            "token": reset_token,
+            "created_at": datetime.now(timezone.utc),
+            "expires_at": datetime.now(timezone.utc) + timedelta(hours=1),
+            "used": False
+        })
+        
+        # Send email (async in background would be better in production)
+        try:
+            await send_password_reset_email(payload.email, reset_token, settings)
+        except Exception as e:
+            print(f"Error sending email: {e}")
+            # Don't expose email sending errors to prevent information leakage
+    
+    return {
+        "detail": "If an account with that email exists, password reset instructions have been sent."
+    }
+
+
+@router.post("/reset-password")
+async def reset_password(
+    token: str,
+    new_password: str,
+    db=Depends(get_db)
+):
+    """Reset password using the token from email
+    
+    This endpoint:
+    1. Validates the reset token
+    2. Checks if it's not expired or already used
+    3. Updates the user's password
+    4. Marks the token as used
+    """
+    # Find the reset token
+    reset_request = await db.password_resets.find_one({
+        "token": token,
+        "used": False,
+        "expires_at": {"$gt": datetime.now(timezone.utc)}
+    })
+    
+    if not reset_request:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token"
+        )
+    
+    # Validate new password
+    if len(new_password) < 8:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must be at least 8 characters"
+        )
+    
+    # Update user's password
+    new_hash = hash_password(new_password)
+    await db.users.update_one(
+        {"email": reset_request["email"]},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    # Mark token as used
+    await db.password_resets.update_one(
+        {"_id": reset_request["_id"]},
+        {"$set": {"used": True, "used_at": datetime.now(timezone.utc)}}
+    )
+    
+    return {"detail": "Password has been reset successfully. You can now log in with your new password."}
 
 
 @router.get("/google-client-id")

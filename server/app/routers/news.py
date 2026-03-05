@@ -1,9 +1,18 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional, List
-from fastapi import APIRouter, Query, HTTPException
+from typing import Optional, List, Dict
+from fastapi import APIRouter, Query, HTTPException, Depends
 from pydantic import BaseModel
 import httpx
 import asyncio
+import json
+import google.generativeai as genai
+
+# Import settings
+from ..config import get_settings
+
+# print("Configuring Gemini API with key... ", get_settings().gemini_api_key)
+
+genai.configure(api_key=get_settings().gemini_api_key)
 
 # Free crypto news APIs we'll try
 NEWS_APIS = [
@@ -41,7 +50,7 @@ NEGATIVE_WORDS = {
     'bankruptcy', 'bankrupt', 'red', 'underperform', 'miss', 'missed', 'concern', 'worried'
 }
 
-def analyze_sentiment(text: str) -> dict:
+def analyze_sentiment(text: str) -> Dict[str, any]:
     """Simple rule-based sentiment analysis for crypto news"""
     if not text:
         return {"label": "neutral", "score": 0.5, "confidence": 0.0}
@@ -102,6 +111,25 @@ class NewsResponse(BaseModel):
     total: int
     filter_coin: Optional[str] = None
     date_range: str
+
+
+class SummaryRequest(BaseModel):
+    title: str
+    body: str
+    url: Optional[str] = None
+
+
+class ChatMessage(BaseModel):
+    role: str  # "user" or "assistant"
+    content: str
+
+
+class ChatRequest(BaseModel):
+    title: str
+    body: str
+    message: str
+    conversation_history: List[ChatMessage] = []
+    sentiment: Optional[dict] = None
 
 
 router = APIRouter(prefix="/news", tags=["news"])
@@ -247,3 +275,146 @@ async def get_trending_news():
     processed.sort(key=lambda x: x["hotness"], reverse=True)
     
     return {"trending": processed[:10], "total": len(processed[:10])}
+
+
+@router.post("/summarize")
+async def summarize_news(request: SummaryRequest, settings = Depends(get_settings)):
+    """
+    Generate an AI summary of a news article using Google Gemini.
+    Supports multiple conversation turns with sentiment and price impact analysis.
+    """
+    if not settings.gemini_api_key:
+        raise HTTPException(status_code=500, detail="Gemini API key not configured")
+    
+    try:
+        # print("Summarize news reached")
+        # Craft a comprehensive prompt for initial summarization
+        prompt = f"""You are a cryptocurrency news analyst and market expert. Provide a comprehensive analysis of the following news article.
+
+Article Title: {request.title}
+
+Article Content: {request.body}
+
+Please provide your analysis in the following format:
+
+📰 **SUMMARY**
+Provide a clear, informative summary in 3-5 bullet points that captures:
+- The main news or event
+- Key details and implications
+- Potential impact on the crypto market
+
+💭 **SENTIMENT ANALYSIS**
+Explain the overall sentiment of this article and why:
+- Is it positive, negative, or neutral?
+- What specific words, phrases, or facts contribute to this sentiment?
+- How might this sentiment affect investor behavior?
+
+📊 **PRICE IMPACT ANALYSIS**
+Analyze the potential market impact:
+- Which cryptocurrencies are likely to be affected?
+- Short-term price impact (next 24-48 hours)
+- Long-term implications (if any)
+- Related market factors to watch
+
+Format your response with clear sections and use bullet points (•) for readability."""
+
+        # Use Gemini API via REST
+        model = genai.GenerativeModel("gemini-2.5-flash")
+
+        response = model.generate_content(prompt)
+
+        if not response.text:
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid response from Gemini API"
+            )
+
+        summary_text = response.text.strip()
+
+        return {
+            "summary": summary_text,
+            "success": True,
+            "supports_followup": True
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"\n=== GEMINI API ERROR ===")
+        print(f"Error: {str(e)}")
+        print(f"Traceback:\n{error_details}")
+        print(f"========================\n")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Failed to generate summary: {str(e)}"
+        )
+
+
+@router.post("/chat")
+async def chat_with_news(request: ChatRequest, settings = Depends(get_settings)):
+    """
+    Chat endpoint for follow-up questions about news articles.
+    Maintains conversation context for multi-turn interactions.
+    """
+    if not settings.gemini_api_key:
+        raise HTTPException(status_code=500, detail="Gemini API key not configured")
+    
+    try:
+        # Build context from conversation history
+        context = f"""You are a cryptocurrency news analyst and market expert. You are helping users understand this news article:
+
+Title: {request.title}
+Content: {request.body}
+"""
+        
+        # Add sentiment info if available
+        if request.sentiment:
+            context += f"\nDetected Sentiment: {request.sentiment.get('label', 'neutral')} ({request.sentiment.get('score', 0.5):.2%})\n"
+        
+        context += "\nPrevious conversation:\n"
+        
+        # Add conversation history
+        for msg in request.conversation_history:
+            role_label = "User" if msg.role == "user" else "Assistant"
+            context += f"{role_label}: {msg.content}\n"
+        
+        # Add current user message
+        context += f"\nUser's current question: {request.message}\n\n"
+        context += """Please provide a helpful, accurate response. Use bullet points for clarity when appropriate. 
+If asked about sentiment, explain the reasoning behind it. 
+If asked about price impact, provide analysis based on similar historical events and market dynamics."""
+        
+        # Use Gemini API via REST
+        model = genai.GenerativeModel("gemini-2.5-flash")
+
+        response = model.generate_content(context)
+
+        if not response.text:
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid response from Gemini API"
+            )
+
+        res = response.text.strip()
+
+        return {
+            "response": res,
+            "success": True
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"\n=== CHAT API ERROR ===")
+        print(f"Error: {str(e)}")
+        print(f"Traceback:\n{error_details}")
+        print(f"======================\n")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate response: {str(e)}"
+        )
+

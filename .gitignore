@@ -1,128 +1,32 @@
-# ============================================
 # Python
-# ============================================
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environments
-venv/
+*.pyo
 .venv/
-ENV/
-env/
-cryptoenv/
+.env/
+*.env
+*.venv
+server/.venv/
+server/.env
 
-# ============================================
-# Node.js / React
-# ============================================
+# Node
 node_modules/
-npm-debug.log*
+pm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+/dist
 
-# Build outputs
-dist/
-build/
-.next/
-out/
+# Vite
+.vite/
 
-# ============================================
-# Environment & Secrets
-# ============================================
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-*.local
+# OS
+.DS_Store
+Thumbs.db
 
-# ============================================
-# IDE & Editors
-# ============================================
+# IDEs
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
-.project
-.classpath
-.settings/
 
-# ============================================
-# OS Generated Files
-# ============================================
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-
-# ============================================
-# Jupyter Notebooks
-# ============================================
-.ipynb_checkpoints/
-*.ipynb
-
-# ============================================
-# ML Model Checkpoints (optional - uncomment if models are too large)
-# ============================================
-# *.h5
-# *.pkl
-# *.joblib
-
-# ============================================
-# Logs & Temp Files
-# ============================================
-*.log
-logs/
-tmp/
-temp/
-*.tmp
-
-# ============================================
-# Database
-# ============================================
-*.db
-*.sqlite3
-
-# ============================================
-# Coverage & Testing
-# ============================================
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# ============================================
 # Misc
-# ============================================
-*.bak
-*.backup
-.history/
+*.log
+*.sqlite3

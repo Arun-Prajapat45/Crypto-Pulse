@@ -41,6 +41,10 @@ class ChangePasswordRequest(BaseModel):
     new_password: str
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
 class GoogleAuthPayload(BaseModel):
     credential: str  # Google ID token from frontend
 

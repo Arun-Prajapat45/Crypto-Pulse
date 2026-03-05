@@ -21,6 +21,17 @@ class Settings(BaseSettings):
     # Google OAuth settings
     google_client_id: str = Field("", env="GOOGLE_CLIENT_ID")
     google_client_secret: str = Field("", env="GOOGLE_CLIENT_SECRET")
+    
+    # Email settings (for password reset)
+    smtp_host: str = Field("smtp.gmail.com", env="SMTP_HOST")
+    smtp_port: int = Field(587, env="SMTP_PORT")
+    smtp_username: str = Field("", env="SMTP_USERNAME")  # Your email
+    smtp_password: str = Field("", env="SMTP_PASSWORD")  # App password
+    smtp_from_email: str = Field("", env="SMTP_FROM_EMAIL")  # From email address
+    frontend_url: str = Field("http://localhost:5173", env="FRONTEND_URL")
+    
+    # Google Gemini AI settings
+    gemini_api_key: str = Field("", env="GEMINI_API_KEY")
 
     base_dir: Path = Path(__file__).resolve().parents[3]
 
