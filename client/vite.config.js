@@ -4,11 +4,17 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
 
-  resolve: {
+  optimizeDeps: {
+    include: ["fast-equals"],
+    esbuildOptions: {
+      mainFields: ["module", "main"],
+    },
   },
 
-  optimizeDeps: {
-    include: ["fast-equals"]
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
   },
 
   server: {
