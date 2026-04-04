@@ -54,6 +54,10 @@ def create_app() -> FastAPI:
     profilephotos_dir.mkdir(exist_ok=True, parents=True)
     app.mount("/profilephotos", StaticFiles(directory=profilephotos_dir), name="profilephotos")
 
+    @app.get("/")
+    async def root():
+        return {"status": "ok", "message": "Crypto Forecast API is running"}
+
     @app.get("/health")
     async def health():
         # Dynamically import get_db to avoid resolving dependency at definition time
