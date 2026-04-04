@@ -15,3 +15,6 @@ pydantic-settings
 httpx
 google-generativeai
 email-validator
+certifi
+dnspython
+pymongo[srv]
