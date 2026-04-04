@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi import Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +13,9 @@ from .routers import auth, profile, forecast, dashboard, news
 def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(title=settings.app_name)
+
+    # Build allowed origins list from CORS_ORIGINS env var + localhost defaults
+    cors_env = os.getenv("CORS_ORIGINS", "")
     origins = [
         "http://localhost:5173",
         "http://localhost:5174",
@@ -19,9 +24,16 @@ def create_app() -> FastAPI:
         "http://127.0.0.1:5174",
         "http://127.0.0.1:5175",
     ]
+    # Add any origins from the environment variable (comma-separated)
+    if cors_env:
+        for origin in cors_env.split(","):
+            origin = origin.strip()
+            if origin and origin not in origins:
+                origins.append(origin)
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origins=["*"],  # Allow all origins for deployed version
         allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
